@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodWeb_API", "FoodWeb_API\FoodWeb_API.csproj", "{5472A1B2-6625-4AEC-9109-1BD2CE353F25}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5472A1B2-6625-4AEC-9109-1BD2CE353F25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5472A1B2-6625-4AEC-9109-1BD2CE353F25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5472A1B2-6625-4AEC-9109-1BD2CE353F25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5472A1B2-6625-4AEC-9109-1BD2CE353F25}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D8A06C59-C8A4-4FBC-97ED-7514172468AA}
+	EndGlobalSection
+EndGlobal
