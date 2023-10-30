@@ -1,4 +1,5 @@
-﻿using FoodWeb_API.Data;
+﻿using Azure;
+using FoodWeb_API.Data;
 using FoodWeb_API.Models;
 using FoodWeb_API.Models.Dto;
 using FoodWeb_API.Models.Services;
@@ -60,7 +61,7 @@ namespace FoodWeb_API.Controllers
                     if (menuItemCreateDTO == null || menuItemCreateDTO.Image.Length == 0) { 
                         return BadRequest();
                     }
-                    string fileName = $"{menuItemCreateDTO.Name}{Guid.NewGuid()}{Path.GetExtension(menuItemCreateDTO.Image.FileName)}";
+                    string fileName = $"{menuItemCreateDTO.Name}-{Guid.NewGuid()}{Path.GetExtension(menuItemCreateDTO.Image.FileName)}";
                     MenuItem menuItem = new()
                     {
                         Name = menuItemCreateDTO.Name,
@@ -70,8 +71,8 @@ namespace FoodWeb_API.Controllers
                         Description = menuItemCreateDTO.Description,
                         Image = await _blob.UploadBlob(fileName, SD.SD_Storage_Container, menuItemCreateDTO.Image)
                     };
-                    _db.MenuItems.AddAsync(menuItem);
-                    _db.SaveChangesAsync();
+                    await _db.MenuItems.AddAsync(menuItem);
+                    await _db.SaveChangesAsync();
                     _response.Result = menuItem;
                     return CreatedAtRoute("GetMenuItem", new {id = menuItem.Id},_response);
                 }
@@ -87,6 +88,47 @@ namespace FoodWeb_API.Controllers
                 _response.ErrorMessages = new List<string> { ex.ToString() };
 
             }
+            return _response;
+        }
+        [HttpPut("id:int")]
+        public async Task<ActionResult<ApiResponse>> UpdateMenuItem([FromForm] MenuItemUpdateDTO NewItem, int id)
+        {
+            if(id==0 ) return BadRequest();
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+                    if (NewItem == null || id != NewItem.Id) return BadRequest();
+
+                    MenuItem oldItem = await _db.MenuItems.FindAsync( id);
+                    if (oldItem == null) return NotFound();
+
+                    oldItem.Name = NewItem.Name;
+                    oldItem.Description = NewItem.Description; 
+                    oldItem.Price = NewItem.Price;
+                    oldItem.SpecialTag = NewItem.SpecialTag;
+
+                    if(NewItem.Image != null && NewItem.Image.Length>0) {
+
+                        string fileName = $"{NewItem.Name}-{Guid.NewGuid()}{Path.GetExtension(NewItem.Image.FileName)}";
+                        await _blob.DeleteBlob(oldItem.Image.Split('/').Last(), SD.SD_Storage_Container);
+                        oldItem.Image = await _blob.UploadBlob(fileName, SD.SD_Storage_Container, NewItem.Image);
+                    }
+                    _db.Update(oldItem);
+                    await _db.SaveChangesAsync();
+                    _response.StatusCode = System.Net.HttpStatusCode.NoContent;
+                    return Ok(_response);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.ToString() };
+            }
+
             return _response;
         }
     }
