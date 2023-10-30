@@ -91,7 +91,7 @@ namespace FoodWeb_API.Data
                     Description = "Cơm Tấm - Broken Rice with Grilled Pork:\r\nIndulge in the classic flavors of Vietnam with our Cơm Tấm, a delicious dish featuring fragrant broken rice served with perfectly grilled pork and a medley of fresh herbs. It's a Vietnamese favorite that offers a taste of culinary excellence.",
                     Image = "https://foodstoragepic.blob.core.windows.net/foodpic/comtam.jpg",
                     Price = 5.99,
-                    Category = "Rice Dishes",
+                    Category = "Rice Dish",
                     SpecialTag = "Chef's Special"
                 }, new MenuItem
                 {
