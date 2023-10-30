@@ -131,5 +131,33 @@ namespace FoodWeb_API.Controllers
 
             return _response;
         }
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<ApiResponse>> DeleteMenuItem(int id)
+        {
+            try
+            {
+                if(id == 0) return BadRequest();
+
+                MenuItem itemToDelete = await _db.MenuItems.FindAsync(id);
+                if(itemToDelete == null)
+                {
+                    return NotFound();
+                    
+                }
+                await _blob.DeleteBlob(itemToDelete.Image.Split('/').Last(),SD.SD_Storage_Container) ;
+                int time = 2000;
+                Thread.Sleep(time);
+                _db.Remove(itemToDelete);
+                await _db.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.ToString() };
+            }
+
+            return _response;
+        }
     }
 }
