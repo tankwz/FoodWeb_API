@@ -135,7 +135,7 @@ namespace FoodWeb_API.Controllers
 
             LoginResponeDTO loginRespone = new()  
             {
-                Email = user.Email,
+                Email = user.Email, 
                 Token = tokenHandler.WriteToken(token),
             };
             if (loginRespone.Email == null || string.IsNullOrEmpty(loginRespone.Token))
