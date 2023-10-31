@@ -8,7 +8,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Text;
+using System.Security.Claims;
 
 namespace FoodWeb_API.Controllers
 {
@@ -111,11 +115,28 @@ namespace FoodWeb_API.Controllers
                 //right username, wrong pass
                 return BadRequest(_response);
             }
+            //jwt token
+            var role = await _userManager.GetRolesAsync(user);
+            byte[] key = Encoding.ASCII.GetBytes(secretKey);
+            SecurityTokenDescriptor tokenDescriptor = new()
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim("fullName", user.Name),
+                    new Claim("id", user.Id.ToString()),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, role.FirstOrDefault())
+                }),
+                Expires = DateTime.UtcNow.AddDays(30),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            JwtSecurityTokenHandler tokenHandler = new();
+            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
 
-            LoginResponeDTO loginRespone = new()
+            LoginResponeDTO loginRespone = new()  
             {
                 Email = user.Email,
-                Token = "a"
+                Token = tokenHandler.WriteToken(token),
             };
             if (loginRespone.Email == null || string.IsNullOrEmpty(loginRespone.Token))
             {
