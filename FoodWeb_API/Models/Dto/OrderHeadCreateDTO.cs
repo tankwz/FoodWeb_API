@@ -11,9 +11,9 @@ namespace FoodWeb_API.Models.Dto
         public string PickupPhoneNumber { get; set; }
         [Required]
         public string PickupEmail { get; set; }
-       
 
-        public string AppUser {  get; set; }
+
+        public string AppUserId { get; set; }
 
         public double OrderTotal { get; set; }
 

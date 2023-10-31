@@ -1,5 +1,7 @@
 ﻿using FoodWeb_API.Data;
 using FoodWeb_API.Models;
+using FoodWeb_API.Models.Dto;
+using FoodWeb_API.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -83,6 +85,54 @@ namespace FoodWeb_API.Controllers
 
 
 
+        }
+        [HttpPost]
+        public async Task<ActionResult<ApiResponse>> CreateOrder([FromBody] OrderHeadCreateDTO orderHeadDTO)
+        {
+            try
+            {
+                OrderHead head = new()
+                {
+                    PickupName = orderHeadDTO.PickupName,
+                    PickupPhoneNumber = orderHeadDTO.PickupPhoneNumber,
+                    PickupEmail = orderHeadDTO.PickupEmail,
+                    AppUserId = orderHeadDTO.AppUserId,
+                    OrderTotal = orderHeadDTO.OrderTotal,
+                    OrderDate = DateTime.Now,
+                    Status = String.IsNullOrEmpty(orderHeadDTO.Status) ? SD.Status_Pending : orderHeadDTO.Status,
+                };
+                if (ModelState.IsValid)
+                {
+                    await _db.OrderHead.AddAsync(head);
+                    await _db.SaveChangesAsync();
+                    foreach (var detail in orderHeadDTO.OrderDetailsDTO)
+                    {
+                        OrderDetails orderDetail = new()
+                        {
+                            OrderHeadId = head.OrderHeadId,
+                            MenuItemId = detail.MenuItemId,
+                            ItemName = detail.ItemName,
+                            Quantity = detail.Quantity,
+                            Price = detail.Price,
+                        };
+                        await _db.OrderDetails.AddAsync(orderDetail);
+
+                    }
+                    await _db.SaveChangesAsync();
+                    _response.Result = head;
+                    _response.StatusCode = System.Net.HttpStatusCode.Created;
+                    return Ok(_response);
+
+                }
+            }
+            catch(Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.ToString() };
+            }
+             
+
+            return _response;
         }
     }
 }
