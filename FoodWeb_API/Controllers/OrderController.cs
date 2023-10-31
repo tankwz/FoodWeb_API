@@ -134,5 +134,53 @@ namespace FoodWeb_API.Controllers
 
             return _response;
         }
+
+        [HttpPut]
+        public async Task<ActionResult<ApiResponse>> UpdateOrderHead(int id, [FromBody] OrderHeadUpdateDTO orderHeadDTO)
+        {
+            try
+            {
+                if(orderHeadDTO == null || orderHeadDTO.OrderHeadId != id)
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    return BadRequest(_response);
+                }
+                OrderHead head = await _db.OrderHead.FirstOrDefaultAsync(a=>a.OrderHeadId == id);
+                if(head == null)
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = System.Net.HttpStatusCode.NotFound;
+                    return NotFound(_response);
+                }
+                if(!string.IsNullOrEmpty(orderHeadDTO.PickupName))
+                {
+                    head.PickupName = orderHeadDTO.PickupName;
+                }
+                if (!string.IsNullOrEmpty(orderHeadDTO.PickupPhoneNumber))
+                {
+                    head.PickupPhoneNumber = orderHeadDTO.PickupPhoneNumber;
+                }
+                if (!string.IsNullOrEmpty(orderHeadDTO.PickupEmail))
+                {
+                    head.PickupEmail = orderHeadDTO.PickupEmail;
+                }
+                if (!string.IsNullOrEmpty(orderHeadDTO.Status))
+                {
+                    head.Status = orderHeadDTO.Status;
+                }
+                await _db.SaveChangesAsync();
+                _response.StatusCode = System.Net.HttpStatusCode.NoContent;
+                _response.IsSuccess = true;
+                return Ok(_response);   
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.ToString() };
+            }
+            return _response;
+        }
     }
 }
