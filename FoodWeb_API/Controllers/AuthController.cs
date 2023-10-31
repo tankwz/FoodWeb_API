@@ -13,32 +13,33 @@ using System.Net;
 namespace FoodWeb_API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController] 
+    [ApiController]
     public class AuthController : ControllerBase
     {
         private readonly AppDbContext _db;
         private string secretKey;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private ApiResponse _respone;
+        private ApiResponse _response;
         public AuthController(AppDbContext db, IConfiguration configuration, UserManager<AppUser> userm, RoleManager<IdentityRole> rolem)
         {
             secretKey = configuration.GetValue<string>("ApiSettings:Secret");
             _db = db;
             _userManager = userm;
             _roleManager = rolem;
-            _respone = new ApiResponse();
+            _response = new ApiResponse();
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromForm] RegisterRequestDTO  register)
+        public async Task<IActionResult> Register([FromForm] RegisterRequestDTO register)
         {
             AppUser userFromDb = await _db.AppUsers.FirstOrDefaultAsync(a => a.UserName.ToLower() == register.UserName.ToLower());
-            if(userFromDb != null) {
-                _respone.IsSuccess = false;
-                _respone.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                _respone.ErrorMessages.Add("Username already exists");
-                return BadRequest(_respone);
+            if (userFromDb != null)
+            {
+                _response.IsSuccess = false;
+                _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                _response.ErrorMessages.Add("Username already exists");
+                return BadRequest(_response);
             }
 
             AppUser newUser = new()
@@ -67,19 +68,68 @@ namespace FoodWeb_API.Controllers
                     {
                         await _userManager.AddToRoleAsync(newUser, SD.Role_Customer);
                     }
-                    _respone.StatusCode = HttpStatusCode.OK;
-                    _respone.IsSuccess = true;
-                    return Ok(_respone);
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    return Ok(_response);
                 }
             }
-            catch(Exception ex) { }
-            _respone.StatusCode = HttpStatusCode.BadRequest;
-            _respone.IsSuccess = false;
-            _respone.ErrorMessages.Add("Error while registering");
-            return BadRequest(_respone);
-    
-        }
+            catch (Exception ex) { }
+            _response.StatusCode = HttpStatusCode.BadRequest;
+            _response.IsSuccess = false;
+            _response.ErrorMessages.Add("Error while registering");
+            return BadRequest(_response);
 
+        }
+        [HttpPost("Login")]
+        public async Task<ActionResult<ApiResponse>> Login(LoginRequestDTO login)
+        {
+            if (login.UserName == string.Empty || login.Password == string.Empty)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Please enter username and password");
+                return BadRequest(_response);
+            }
+            AppUser user = _db.AppUsers.FirstOrDefault(u => u.UserName == login.UserName);
+
+            if (user == null)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Please enter correct username or password");
+                //wrong user name
+                return BadRequest(_response);
+            }
+            bool correctPass = await _userManager.CheckPasswordAsync(user, login.Password);
+            if (!correctPass)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Please enter correct username or password");
+                //right username, wrong pass
+                return BadRequest(_response);
+            }
+
+            LoginResponeDTO loginRespone = new()
+            {
+                Email = user.Email,
+                Token = "a"
+            };
+            if (loginRespone.Email == null || string.IsNullOrEmpty(loginRespone.Token))
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Please enter correct username or password");
+                return BadRequest(_response);
+            }
+            _response.IsSuccess = true;
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.Result = loginRespone;
+                
+            return Ok(_response);
+        }
 
     }
 }
