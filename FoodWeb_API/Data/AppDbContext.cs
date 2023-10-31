@@ -14,6 +14,8 @@ namespace FoodWeb_API.Data
         public DbSet<MenuItem> MenuItems { get; set; }
 
         public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<ShoppingCart> shoppingCarts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }  
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
