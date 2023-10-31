@@ -23,14 +23,18 @@ namespace FoodWeb_API.Controllers
         {
             try
             {
-                if(string.IsNullOrEmpty(userId))
+                ShoppingCart cart;
+                if (string.IsNullOrEmpty(userId))
                 {
-                    _response.IsSuccess = false;
-                    _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                    return _response;
+                    cart = new();
                 }
-                ShoppingCart cart = await _db.ShoppingCarts.Include(a => a.CartItems).ThenInclude(a=>a.MenuItem).FirstOrDefaultAsync(c => c.UserId == userId);
-
+                else
+                {
+                    cart = await _db.ShoppingCarts
+                        .Include(a => a.CartItems)
+                        .ThenInclude(a => a.MenuItem)
+                        .FirstOrDefaultAsync(c => c.UserId == userId);
+                }
                 _response.Result = cart;
                 _response.StatusCode = System.Net.HttpStatusCode.OK;
                 return Ok(_response);
