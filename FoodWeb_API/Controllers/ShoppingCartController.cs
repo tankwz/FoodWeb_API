@@ -17,6 +17,50 @@ namespace FoodWeb_API.Controllers
             _response = new ApiResponse();
             _db = db;
         }
+
+        [HttpGet]
+        public async Task<ActionResult<ApiResponse>> GetCart(string userId)
+        {
+            try
+            {
+                if(string.IsNullOrEmpty(userId))
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    return _response;
+                }
+                ShoppingCart cart = await _db.ShoppingCarts.Include(a => a.CartItems).ThenInclude(a=>a.MenuItem).FirstOrDefaultAsync(c => c.UserId == userId);
+
+                _response.Result = cart;
+                _response.StatusCode = System.Net.HttpStatusCode.OK;
+                return Ok(_response);
+                if (cart == null)
+                {
+
+                }
+
+            }
+
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                _response.ErrorMessages = new List<string> () { ex.ToString() };
+                return _response;
+            }
+
+
+
+
+
+
+
+
+
+
+
+            return _response;
+        }
         [HttpPost]
         public async Task<ActionResult<ApiResponse>> AddOrUpdateCartItem(string userId, int itemId, int quantity)
         {
