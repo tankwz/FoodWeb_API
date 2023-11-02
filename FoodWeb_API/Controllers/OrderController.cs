@@ -95,7 +95,7 @@ namespace FoodWeb_API.Controllers
                 {
                     PickupName = orderHeadDTO.PickupName,
                     PickupPhoneNumber = orderHeadDTO.PickupPhoneNumber,
-                    PickupEmail = orderHeadDTO.PickupEmail,
+                    PickupAddress = orderHeadDTO.PickupAddress,
                     AppUserId = orderHeadDTO.AppUserId,
                     OrderTotal = orderHeadDTO.OrderTotal,
                     OrderDate = DateTime.Now,
@@ -161,9 +161,9 @@ namespace FoodWeb_API.Controllers
                 {
                     head.PickupPhoneNumber = orderHeadDTO.PickupPhoneNumber;
                 }
-                if (!string.IsNullOrEmpty(orderHeadDTO.PickupEmail))
+                if (!string.IsNullOrEmpty(orderHeadDTO.PickupAddress))
                 {
-                    head.PickupEmail = orderHeadDTO.PickupEmail;
+                    head.PickupAddress = orderHeadDTO.PickupAddress;
                 }
                 if (!string.IsNullOrEmpty(orderHeadDTO.Status))
                 {

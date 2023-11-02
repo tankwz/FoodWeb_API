@@ -50,6 +50,8 @@ namespace FoodWeb_API.Controllers
             {
                 UserName = register.UserName,
                 Email = register.UserName,
+                PhoneNumber = register.PhoneNumber,
+                Address = register.Address,
                 NormalizedEmail = register.UserName.ToUpper(),
                 Name = register.Name
             };
