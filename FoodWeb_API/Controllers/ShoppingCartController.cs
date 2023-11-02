@@ -63,7 +63,6 @@ namespace FoodWeb_API.Controllers
 
 
 
-            return _response;
         }
         [HttpPost]
         public async Task<ActionResult<ApiResponse>> AddOrUpdateCartItem(string userId, int itemId, int quantity)
@@ -133,6 +132,23 @@ namespace FoodWeb_API.Controllers
             }
 
             return _response    ;
+        }
+        [HttpPost( "SetCartQuantity")]
+        public async Task<ActionResult<ApiResponse>> SetCartQuantity( int cartItemId, int quantity)
+        {
+            //ShoppingCart cart = await _db.ShoppingCarts.Include(a => a.CartItems).FirstOrDefaultAsync(a=> a.UserId == userId);
+            //MenuItem item = await _db.MenuItems.FirstOrDefaultAsync(i => i.Id == itemId);
+            CartItem carItem = await _db.CartItems.FirstOrDefaultAsync(a => a.Id == cartItemId);
+            if (carItem == null)
+            {
+                _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                return BadRequest(_response);
+            }
+            carItem.Quantity = quantity;
+            await _db.SaveChangesAsync();
+            _response.StatusCode = System.Net.HttpStatusCode.OK;
+            return Ok(_response);
         }
 
     }
