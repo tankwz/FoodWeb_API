@@ -89,7 +89,7 @@ namespace FoodWeb_API.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult<ApiResponse>> Login(LoginRequestDTO login)
         {
-            if (login.UserName == string.Empty || login.Password == string.Empty)
+            if (login.Email == string.Empty || login.Password == string.Empty)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
 
@@ -97,7 +97,7 @@ namespace FoodWeb_API.Controllers
                 _response.ErrorMessages.Add("Please enter username and password");
                 return BadRequest(_response);
             }
-            AppUser user = _db.AppUsers.FirstOrDefault(u => u.UserName == login.UserName);
+            AppUser user = _db.AppUsers.FirstOrDefault(u => u.UserName == login.Email);
 
             if (user == null)
             {
@@ -124,12 +124,14 @@ namespace FoodWeb_API.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim("fullName", user.Name),
+                    new Claim("name", user.Name),
                     new Claim("id", user.Id.ToString()),
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Role, role.FirstOrDefault())
+                    new Claim(ClaimTypes.Role, role.FirstOrDefault()),
+                    new Claim("phoneNumber",user.PhoneNumber),
+                    new Claim("address", user.Address)
                 }),
-                Expires = DateTime.UtcNow.AddDays(30),
+                Expires = DateTime.UtcNow.AddDays(14),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             JwtSecurityTokenHandler tokenHandler = new();
