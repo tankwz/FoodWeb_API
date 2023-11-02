@@ -2,7 +2,7 @@
 {
     public class RegisterRequestDTO
     {
-        public string UserName { get; set; } //email
+        public string Email { get; set; } //email
         public string Name { get; set; }
         public string PhoneNumber { get; set; }
 

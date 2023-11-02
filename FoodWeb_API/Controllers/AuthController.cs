@@ -35,24 +35,24 @@ namespace FoodWeb_API.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromForm] RegisterRequestDTO register)
-        {
-            AppUser userFromDb = await _db.AppUsers.FirstOrDefaultAsync(a => a.UserName.ToLower() == register.UserName.ToLower());
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDTO register)
+        {   
+            AppUser userFromDb = await _db.AppUsers.FirstOrDefaultAsync(a => a.UserName.ToLower() == register.Email.ToLower());
             if (userFromDb != null)
             {
                 _response.IsSuccess = false;
                 _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                _response.ErrorMessages.Add("Username already exists");
+                _response.ErrorMessages.Add("Email already exists");
                 return BadRequest(_response);
             }
 
             AppUser newUser = new()
             {
-                UserName = register.UserName,
-                Email = register.UserName,
+                UserName = register.Email,
+                Email = register.Email,
                 PhoneNumber = register.PhoneNumber,
                 Address = register.Address,
-                NormalizedEmail = register.UserName.ToUpper(),
+                NormalizedEmail = register.Email.ToUpper(),
                 Name = register.Name
             };
             try
