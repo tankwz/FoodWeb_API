@@ -12,7 +12,7 @@ namespace FoodWeb_API.Models
         [Required]
         public string PickupPhoneNumber { get; set; }
         [Required]
-        public string PickupEmail { get; set; }
+        public string PickupAddress { get; set; }
         [Required]
         public string AppUserId { get; set; }
         [ForeignKey("AppUserId")]

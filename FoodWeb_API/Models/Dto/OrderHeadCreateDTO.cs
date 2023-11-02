@@ -10,7 +10,7 @@ namespace FoodWeb_API.Models.Dto
         [Required]
         public string PickupPhoneNumber { get; set; }
         [Required]
-        public string PickupEmail { get; set; }
+        public string PickupAddress { get; set; }
 
 
         public string AppUserId { get; set; }
