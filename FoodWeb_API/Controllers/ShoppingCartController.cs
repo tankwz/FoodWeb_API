@@ -110,6 +110,8 @@ namespace FoodWeb_API.Controllers
                     };
                     await _db.CartItems.AddAsync(newCartItem);
                     await _db.SaveChangesAsync();
+                    _response.StatusCode = System.Net.HttpStatusCode.OK;
+                    _response.Result = newCartItem.Id;
                 }
                 else
                 {
@@ -127,9 +129,12 @@ namespace FoodWeb_API.Controllers
                     {
                         checkCart.Quantity = newQuantity;
                         await _db.SaveChangesAsync();
+                        _response.StatusCode = System.Net.HttpStatusCode.OK;
+                        _response.Result = checkCart.Id;
                     }
                 }
             }
+            
 
             return _response    ;
         }
