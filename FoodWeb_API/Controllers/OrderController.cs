@@ -5,6 +5,7 @@ using FoodWeb_API.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace FoodWeb_API.Controllers
 {
@@ -62,12 +63,19 @@ namespace FoodWeb_API.Controllers
                 }
 
                 OrderHead order = await _db.OrderHead.Include(a => a.OrderDetails).FirstOrDefaultAsync(a => a.OrderHeadId == id);
+                
                 if(order == null)
                 {
                     _response.IsSuccess = false;
                     _response.StatusCode = System.Net.HttpStatusCode.NotFound; return NotFound(_response);
                 }
-
+                AppUser user = await _db.AppUsers.AsNoTracking().FirstOrDefaultAsync(u => u.Id == order.AppUserId);
+                AppUser appUser = new()
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                };
+                order.AppUser = appUser;
                 _response.Result = order;
                 _response.StatusCode = System.Net.HttpStatusCode.OK;
                 return Ok(_response) ;
@@ -80,10 +88,6 @@ namespace FoodWeb_API.Controllers
 
 
             return _response;
-
-
-
-
 
 
         }
