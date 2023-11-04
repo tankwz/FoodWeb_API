@@ -90,7 +90,7 @@ namespace FoodWeb_API.Controllers
             }
             return _response;
         }
-        [HttpPut("id:int")]
+        [HttpPut("{id:int}")]
         public async Task<ActionResult<ApiResponse>> UpdateMenuItem([FromForm] MenuItemUpdateDTO NewItem, int id)
         {
             if(id==0 ) return BadRequest();

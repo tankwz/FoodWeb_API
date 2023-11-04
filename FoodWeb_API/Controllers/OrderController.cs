@@ -47,7 +47,8 @@ namespace FoodWeb_API.Controllers
             }
             return _response;
         }
-        [HttpGet("id:int")]
+        [HttpGet("{id:int}")]
+
         public async Task<ActionResult<ApiResponse>> GetOrder(int id)
         {
 
