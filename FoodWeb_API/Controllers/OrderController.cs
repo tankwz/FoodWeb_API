@@ -98,6 +98,7 @@ namespace FoodWeb_API.Controllers
                     PickupAddress = orderHeadDTO.PickupAddress,
                     AppUserId = orderHeadDTO.AppUserId,
                     OrderTotal = orderHeadDTO.OrderTotal,
+                    TotalItems = orderHeadDTO.TotalItems,
                     OrderDate = DateTime.Now,
                     Status = String.IsNullOrEmpty(orderHeadDTO.Status) ? SD.Status_Pending : orderHeadDTO.Status,
                 };
