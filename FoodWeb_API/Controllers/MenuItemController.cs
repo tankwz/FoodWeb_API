@@ -4,6 +4,7 @@ using FoodWeb_API.Models;
 using FoodWeb_API.Models.Dto;
 using FoodWeb_API.Models.Services;
 using FoodWeb_API.Util;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -50,7 +51,7 @@ namespace FoodWeb_API.Controllers
             return Ok(_response);
 
         }
-
+        [Authorize(Roles =SD.Role_Admin)]
         [HttpPost]
         public async Task<ActionResult<ApiResponse>> CreateMenuItem([FromForm] MenuItemCreateDTO menuItemCreateDTO)
         {
@@ -90,6 +91,7 @@ namespace FoodWeb_API.Controllers
             }
             return _response;
         }
+        [Authorize(Roles = SD.Role_Admin)]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<ApiResponse>> UpdateMenuItem([FromForm] MenuItemUpdateDTO NewItem, int id)
         {
@@ -133,6 +135,7 @@ namespace FoodWeb_API.Controllers
 
             return _response;
         }
+        [Authorize(Roles = SD.Role_Admin)]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<ApiResponse>> DeleteMenuItem(int id)
         {

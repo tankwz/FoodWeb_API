@@ -119,6 +119,8 @@ namespace FoodWeb_API.Controllers
             }
             //jwt token
             var role = await _userManager.GetRolesAsync(user);
+            JwtSecurityTokenHandler tokenHandler = new();
+
             byte[] key = Encoding.ASCII.GetBytes(secretKey);
             SecurityTokenDescriptor tokenDescriptor = new()
             {
@@ -134,7 +136,6 @@ namespace FoodWeb_API.Controllers
                 Expires = DateTime.UtcNow.AddDays(14),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
-            JwtSecurityTokenHandler tokenHandler = new();
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
 
             LoginResponeDTO loginRespone = new()  
