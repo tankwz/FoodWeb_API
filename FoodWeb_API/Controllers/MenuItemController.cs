@@ -109,8 +109,10 @@ namespace FoodWeb_API.Controllers
                     oldItem.Description = NewItem.Description; 
                     oldItem.Price = NewItem.Price;
                     oldItem.SpecialTag = NewItem.SpecialTag;
+                    oldItem.Category = NewItem.Category;
 
-                    if(NewItem.Image != null && NewItem.Image.Length>0) {
+
+                    if (NewItem.Image != null && NewItem.Image.Length>0) {
 
                         string fileName = $"{NewItem.Name}-{Guid.NewGuid()}{Path.GetExtension(NewItem.Image.FileName)}";
                         await _blob.DeleteBlob(oldItem.Image.Split('/').Last(), SD.SD_Storage_Container);

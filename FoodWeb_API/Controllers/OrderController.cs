@@ -22,7 +22,7 @@ namespace FoodWeb_API.Controllers
             _response = new ApiResponse();
         }
 
-        [HttpGet] 
+        [HttpGet]
         public async Task<ActionResult<ApiResponse>> GetOrders(string? userId)
         {
             try
@@ -42,7 +42,7 @@ namespace FoodWeb_API.Controllers
                 }
                 _response.StatusCode = System.Net.HttpStatusCode.OK;
                 return Ok(_response);
-            }catch (Exception ex) {
+            } catch (Exception ex) {
                 _response.IsSuccess = false;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
@@ -62,9 +62,9 @@ namespace FoodWeb_API.Controllers
                     return BadRequest(_response);
                 }
 
-                OrderHead order = await _db.OrderHead.Include(a => a.OrderDetails).FirstOrDefaultAsync(a => a.OrderHeadId == id);
-                
-                if(order == null)
+                OrderHead order = await _db.OrderHead.Include(a => a.OrderDetails).ThenInclude(a => a.MenuItem).FirstOrDefaultAsync(a => a.OrderHeadId == id);
+
+                if (order == null)
                 {
                     _response.IsSuccess = false;
                     _response.StatusCode = System.Net.HttpStatusCode.NotFound; return NotFound(_response);
@@ -78,9 +78,9 @@ namespace FoodWeb_API.Controllers
                 order.AppUser = appUser;
                 _response.Result = order;
                 _response.StatusCode = System.Net.HttpStatusCode.OK;
-                return Ok(_response) ;
+                return Ok(_response);
             }
-             catch (Exception ex)
+            catch (Exception ex)
             {
                 _response.IsSuccess = false;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
@@ -131,17 +131,17 @@ namespace FoodWeb_API.Controllers
 
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _response.IsSuccess = false;
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
-             
+
 
             return _response;
         }
 
-        [HttpPut]
+        [HttpPut("{id:int}")]
         public async Task<ActionResult<ApiResponse>> UpdateOrderHead(int id, [FromBody] OrderHeadUpdateDTO orderHeadDTO)
         {
             try
