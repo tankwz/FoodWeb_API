@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace FoodWeb_API.Controllers
 {
@@ -23,23 +24,44 @@ namespace FoodWeb_API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse>> GetOrders(string? userId)
+        public async Task<ActionResult<ApiResponse>> GetOrders(string? userId, string searchString, string status, int page=1, int size = 10)
         {
             try
             {
-                var OrderHeaders = await _db.OrderHead
+                
+                IEnumerable<OrderHead>  OrderHeaders = await _db.OrderHead
                     .Include(a => a.OrderDetails)
                     .ThenInclude(a => a.MenuItem)
                     .OrderByDescending(a => a.OrderHeadId)
                     .ToListAsync();
-                if (userId != null)
+                if (!string.IsNullOrEmpty(userId))
                 {
                     _response.Result = OrderHeaders.Where(a => a.AppUserId == userId);
                 }
-                else
+                if (!string.IsNullOrEmpty(searchString))
                 {
-                    _response.Result = OrderHeaders;
+                    OrderHeaders = OrderHeaders.Where(u => u.PickupPhoneNumber.ToLower().Contains(searchString.ToLower()) || u.PickupName.ToLower().Contains(searchString.ToLower()) );
+
                 }
+                if (!string.IsNullOrEmpty(status))
+                {
+                    OrderHeaders = OrderHeaders.Where(u => u.Status.ToLower() == status.ToLower());
+
+                }
+
+
+                OrderFilterPage filterPage = new()
+                {
+                    CurrentPage = page,
+                    HowManyRecords = size,
+                    ForTotal = OrderHeaders.Count(),
+
+                };
+
+                Response.Headers.Add("OrderFilterPage", JsonSerializer.Serialize(filterPage));
+
+                _response.Result = OrderHeaders.Skip((page-1)*size).Take(size);
+
                 _response.StatusCode = System.Net.HttpStatusCode.OK;
                 return Ok(_response);
             } catch (Exception ex) {
