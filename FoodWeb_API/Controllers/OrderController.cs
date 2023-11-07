@@ -36,7 +36,7 @@ namespace FoodWeb_API.Controllers
                     .ToListAsync();
                 if (!string.IsNullOrEmpty(userId))
                 {
-                    _response.Result = OrderHeaders.Where(a => a.AppUserId == userId);
+                    OrderHeaders = OrderHeaders.Where(a => a.AppUserId == userId);
                 }
                 if (!string.IsNullOrEmpty(searchString))
                 {
@@ -58,7 +58,7 @@ namespace FoodWeb_API.Controllers
 
                 };
 
-                Response.Headers.Add("OrderFilterPage", JsonSerializer.Serialize(filterPage));
+                Response.Headers.Add("X-OrderFilterPage", JsonSerializer.Serialize(filterPage));
 
                 _response.Result = OrderHeaders.Skip((page-1)*size).Take(size);
 
