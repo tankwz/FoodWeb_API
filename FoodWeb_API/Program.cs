@@ -32,7 +32,6 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireLowercase = false;
     options.Password.RequireNonAlphanumeric = false;
 
-    //for testing, need to be remove later in production
 });
 
 var secretKey = builder.Configuration.GetValue<string>("ApiSettings:Secret");
