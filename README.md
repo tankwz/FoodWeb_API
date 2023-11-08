@@ -2,7 +2,7 @@ Hi, this is a readme for my backend for my React Food Web at [https://main.d245f
 
 This website is a personal project I made to practice and learn  ASP .NET API and Entity Framework concepts
 
-Live website link: [https://tankwzfoodwebapiz.azurewebsites.net/index.html/](https://tankwzfoodwebapiz.azurewebsites.net/index.html/)
+Live website link: [https://tankwzfoodwebapiz.azurewebsites.net/index.html/](https://tankwzfoodwebapiz.azurewebsites.net/index.html)
 
 API Available (you can also check them on the website since it using swagger):
 
