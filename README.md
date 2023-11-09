@@ -45,7 +45,7 @@ Order Controller:
 
 [HttpGet]
 
-https://tankwzfoodwebapiz.azurewebsites.net/api/Order
+https://tankwzfoodwebapiz.azurewebsites.net/api/Order (this api should be an user api, you must login to call it, and depend on the user role it will return back the data, but i need the data for testing so imma just let it public, not that i forget it, same for some others api too)
 
 [HttpGet("{id:int}")]
 
